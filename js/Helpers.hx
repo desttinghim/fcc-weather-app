@@ -2,9 +2,6 @@ import js.Browser;
 
 typedef AjaxRequest = {
     var url:String;
-    // var method:String;
-    // var format:String;
-    // var callback:String;
     var options:Map<String, String>;
 }
 
