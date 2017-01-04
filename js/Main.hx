@@ -13,6 +13,7 @@ class Main {
         }
         if (Cookie.exists("weather")) {
             weather = Json.parse(Cookie.get("weather"));
+            parseWeather(weather);
         }
         Browser.navigator.geolocation.getCurrentPosition(positionCallback);
     }

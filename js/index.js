@@ -89,7 +89,10 @@ Main.main = function() {
 		var s = js_Cookie.get("lastRequestTime");
 		Main.lastRequestTime = HxOverrides.strDate(s);
 	}
-	if(js_Cookie.exists("weather")) Main.weather = JSON.parse(js_Cookie.get("weather"));
+	if(js_Cookie.exists("weather")) {
+		Main.weather = JSON.parse(js_Cookie.get("weather"));
+		Main.parseWeather(Main.weather);
+	}
 	window.navigator.geolocation.getCurrentPosition(Main.positionCallback);
 };
 Main.positionCallback = function(pos) {
