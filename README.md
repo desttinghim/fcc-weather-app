@@ -5,3 +5,7 @@ done all the programming in Haxe, and I am not using any libraries but the Haxe
 standard Library. I *am* using openweathermap's REST API to get the weather
 info. This site makes use of cookies to minimize the number of requests made to
 the openweathermap API.
+
+## Todo
+
+Get the Github pages site working. I don't know why it isn't right now.
