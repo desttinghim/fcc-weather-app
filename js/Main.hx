@@ -43,7 +43,7 @@ class Main {
         Browser.console.log("Getting weather...");
         // Add code to limit calls
         Helpers.ajax({
-            url: "https://api.openweathermap.org/data/2.5/weather",
+            url: "http://api.openweathermap.org/data/2.5/weather",
             options: [
             "id"        => "524901",
             "APPID"     => "06d6414fcf6bc783d1f3249c2a44fa81",
