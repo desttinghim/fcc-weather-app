@@ -4,7 +4,7 @@ import haxe.Json;
 
 @:expose
 class Main {
-    public static var lastRequestTime = Date.now();
+    public static var lastRequestTime = new Date(2017, 1, 1, 1, 1, 1);
     public static var weather;
     public static var tempUnit = 0;
 
@@ -43,7 +43,7 @@ class Main {
         Browser.console.log("Getting weather...");
         // Add code to limit calls
         Helpers.ajax({
-            url: "http://api.openweathermap.org/data/2.5/weather",
+            url: "https://api.openweathermap.org/data/2.5/weather",
             options: [
             "id"        => "524901",
             "APPID"     => "06d6414fcf6bc783d1f3249c2a44fa81",

@@ -361,7 +361,7 @@ String.__name__ = true;
 Array.__name__ = true;
 Date.__name__ = ["Date"];
 var __map_reserved = {}
-Main.lastRequestTime = new Date();
+Main.lastRequestTime = new Date(2017,1,1,1,1,1);
 Main.tempUnit = 0;
 Main.main();
 })(typeof console != "undefined" ? console : {log:function(){}}, typeof window != "undefined" ? window : exports);
