@@ -6,6 +6,7 @@ import haxe.Json;
 class Main {
     public static var lastRequestTime = Date.fromString("00:00:00");
     public static var weather;
+    public static var tempUnit = 0;
 
     public static function main() {
         if (Cookie.exists("lastRequestTime")) {
@@ -16,6 +17,9 @@ class Main {
             parseWeather(weather);
         }
         Browser.navigator.geolocation.getCurrentPosition(positionCallback);
+        Helpers.getEl("temp-units").onclick = function() {
+            setTempUnit(1 - Main.tempUnit);
+        }
     }
 
     public static function positionCallback(pos) {
@@ -54,19 +58,38 @@ class Main {
     }
 
     public static function weatherCallback(response) {
+        Browser.console.log("Recieved weather data!");
         weather = response;
         Cookie.set("weather", Json.stringify(response));
         parseWeather(response);
     }
 
-    public static function parseWeather(weather) {
+    public static function parseWeather(weather:Dynamic) {
         if (weather == null) {
             Browser.console.log("Weather is null - wait for response.");
             return;
         }
         Helpers.getEl("location").innerHTML = '${weather.name}, ${weather.sys.country}';
-        Helpers.getEl("temperature").innerHTML = Std.string(Std.parseFloat(weather.main.temp) - 273.15);
+        Helpers.getEl("temperature").innerHTML =
+            Std.string(Math.fround(Std.parseFloat(weather.main.temp) - 273.15));
+        setTempUnit(tempUnit);
         Helpers.getEl("description").innerHTML = weather.weather[0].description;
         Helpers.getEl("icon").setAttribute("src", 'http://openweathermap.org/img/w/${weather.weather[0].icon}.png');
+    }
+
+    // 0 for celsius
+    // 1 for fahrenheit
+    public static function setTempUnit(unit) {
+        tempUnit = unit;
+        if (unit == 0) {
+            Helpers.getEl("temp-units").innerHTML = "C";
+            Helpers.getEl("temperature").innerHTML =
+                Std.string(Math.fround(Std.parseFloat(weather.main.temp) - 273.15));
+        }
+        if (unit == 1) {
+            Helpers.getEl("temp-units").innerHTML = "F";
+            Helpers.getEl("temperature").innerHTML =
+                Std.string(Math.fround((Std.parseFloat(weather.main.temp) * (9.0/5.0)) - 459.67));
+        }
     }
 }

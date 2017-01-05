@@ -98,6 +98,9 @@ Main.main = function() {
 		Main.parseWeather(Main.weather);
 	}
 	window.navigator.geolocation.getCurrentPosition(Main.positionCallback);
+	Helpers.getEl("temp-units").onclick = function() {
+		Main.setTempUnit(1 - Main.tempUnit);
+	};
 };
 Main.positionCallback = function(pos) {
 	var lat;
@@ -131,6 +134,7 @@ Main.requestWeather = function(lat,$long) {
 	js_Cookie.set("lastRequestTime",HxOverrides.dateStr(Main.lastRequestTime));
 };
 Main.weatherCallback = function(response) {
+	window.console.log("Recieved weather data!");
 	Main.weather = response;
 	js_Cookie.set("weather",JSON.stringify(response));
 	Main.parseWeather(response);
@@ -140,16 +144,46 @@ Main.parseWeather = function(weather) {
 		window.console.log("Weather is null - wait for response.");
 		return;
 	}
-	Helpers.getEl("location").innerHTML = "" + weather.name + ", " + weather.sys.country;
-	Helpers.getEl("temperature").innerHTML = Std.string(parseFloat(weather.main.temp) - 273.15);
+	Helpers.getEl("location").innerHTML = "" + Std.string(weather.name) + ", " + Std.string(weather.sys.country);
+	Helpers.getEl("temperature").innerHTML = Std.string((function($this) {
+		var $r;
+		var v = Std.parseFloat(weather.main.temp) - 273.15;
+		$r = Math.round(v);
+		return $r;
+	}(this)));
+	Main.setTempUnit(Main.tempUnit);
 	Helpers.getEl("description").innerHTML = weather.weather[0].description;
 	Helpers.getEl("icon").setAttribute("src","http://openweathermap.org/img/w/" + weather.weather[0].icon + ".png");
+};
+Main.setTempUnit = function(unit) {
+	Main.tempUnit = unit;
+	if(unit == 0) {
+		Helpers.getEl("temp-units").innerHTML = "C";
+		Helpers.getEl("temperature").innerHTML = Std.string((function($this) {
+			var $r;
+			var v = parseFloat(Main.weather.main.temp) - 273.15;
+			$r = Math.round(v);
+			return $r;
+		}(this)));
+	}
+	if(unit == 1) {
+		Helpers.getEl("temp-units").innerHTML = "F";
+		Helpers.getEl("temperature").innerHTML = Std.string((function($this) {
+			var $r;
+			var v1 = parseFloat(Main.weather.main.temp) * 1.8 - 459.67;
+			$r = Math.round(v1);
+			return $r;
+		}(this)));
+	}
 };
 Math.__name__ = true;
 var Std = function() { };
 Std.__name__ = true;
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
+};
+Std.parseFloat = function(x) {
+	return parseFloat(x);
 };
 var StringTools = function() { };
 StringTools.__name__ = true;
@@ -327,5 +361,6 @@ Array.__name__ = true;
 Date.__name__ = ["Date"];
 var __map_reserved = {}
 Main.lastRequestTime = HxOverrides.strDate("00:00:00");
+Main.tempUnit = 0;
 Main.main();
 })(typeof console != "undefined" ? console : {log:function(){}}, typeof window != "undefined" ? window : exports);
