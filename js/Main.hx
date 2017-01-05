@@ -43,7 +43,7 @@ class Main {
         Browser.console.log("Getting weather...");
         // Add code to limit calls
         Helpers.ajax({
-            url: "http://api.openweathermap.org/data/2.5/weather",
+            url: "https://api.openweathermap.org/data/2.5/weather",
             options: [
             "id"        => "524901",
             "APPID"     => "06d6414fcf6bc783d1f3249c2a44fa81",
@@ -80,6 +80,7 @@ class Main {
     // 0 for celsius
     // 1 for fahrenheit
     public static function setTempUnit(unit) {
+        if (weather == null) return;
         tempUnit = unit;
         if (unit == 0) {
             Helpers.getEl("temp-units").innerHTML = "C";

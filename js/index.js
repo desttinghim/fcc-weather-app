@@ -119,7 +119,7 @@ Main.requestWeather = function(lat,$long) {
 		return;
 	}
 	window.console.log("Getting weather...");
-	Helpers.ajax({ url : "http://api.openweathermap.org/data/2.5/weather", options : (function($this) {
+	Helpers.ajax({ url : "https://api.openweathermap.org/data/2.5/weather", options : (function($this) {
 		var $r;
 		var _g = new haxe_ds_StringMap();
 		if(__map_reserved.id != null) _g.setReserved("id","524901"); else _g.h["id"] = "524901";
@@ -156,6 +156,7 @@ Main.parseWeather = function(weather) {
 	Helpers.getEl("icon").setAttribute("src","http://openweathermap.org/img/w/" + weather.weather[0].icon + ".png");
 };
 Main.setTempUnit = function(unit) {
+	if(Main.weather == null) return;
 	Main.tempUnit = unit;
 	if(unit == 0) {
 		Helpers.getEl("temp-units").innerHTML = "C";
