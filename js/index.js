@@ -97,7 +97,13 @@ Main.main = function() {
 		Main.weather = JSON.parse(js_Cookie.get("weather"));
 		Main.parseWeather(Main.weather);
 	}
-	window.navigator.geolocation.getCurrentPosition(Main.positionCallback);
+	Helpers.ajax({ url : "http://ipinfo.io", options : (function($this) {
+		var $r;
+		var _g = new haxe_ds_StringMap();
+		if(__map_reserved.callback != null) _g.setReserved("callback","positionCallback"); else _g.h["callback"] = "positionCallback";
+		$r = _g;
+		return $r;
+	}(this))});
 	Helpers.getEl("temp-units").onclick = function() {
 		Main.setTempUnit(1 - Main.tempUnit);
 	};
@@ -105,8 +111,9 @@ Main.main = function() {
 Main.positionCallback = function(pos) {
 	var lat;
 	var $long;
-	lat = Math.round(pos.coords.latitude);
-	$long = Math.round(pos.coords.longitude);
+	var loc = pos.loc.split(",");
+	lat = Math.round(parseFloat(loc[0]));
+	$long = Math.round(parseFloat(loc[1]));
 	window.setInterval(Main.requestWeather,600000,lat,$long);
 	Main.requestWeather(lat,$long);
 };
@@ -119,7 +126,7 @@ Main.requestWeather = function(lat,$long) {
 		return;
 	}
 	window.console.log("Getting weather...");
-	Helpers.ajax({ url : "https://api.openweathermap.org/data/2.5/weather", options : (function($this) {
+	Helpers.ajax({ url : "http://api.openweathermap.org/data/2.5/weather", options : (function($this) {
 		var $r;
 		var _g = new haxe_ds_StringMap();
 		if(__map_reserved.id != null) _g.setReserved("id","524901"); else _g.h["id"] = "524901";

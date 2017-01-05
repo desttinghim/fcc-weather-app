@@ -16,7 +16,15 @@ class Main {
             weather = Json.parse(Cookie.get("weather"));
             parseWeather(weather);
         }
-        Browser.navigator.geolocation.getCurrentPosition(positionCallback);
+        // Can't use, requires secure (https) connection. However, I cannot
+        // use the openweathermap API except on a HTTP connection.
+        // Browser.navigator.geolocation.getCurrentPosition(positionCallback);
+        Helpers.ajax({
+            url: "http://ipinfo.io",
+            options: [
+                "callback" => "positionCallback"
+            ]
+        });
         Helpers.getEl("temp-units").onclick = function() {
             setTempUnit(1 - Main.tempUnit);
         }
@@ -24,8 +32,9 @@ class Main {
 
     public static function positionCallback(pos) {
         var lat, long;
-        lat = Math.round(pos.coords.latitude);
-        long = Math.round(pos.coords.longitude);
+        var loc = pos.loc.split(",");
+        lat = Math.round(Std.parseFloat(loc[0]));
+        long = Math.round(Std.parseFloat(loc[1]));
 
         Browser.window.setInterval(requestWeather, 600000, lat, long);
         requestWeather(lat, long);
@@ -43,7 +52,7 @@ class Main {
         Browser.console.log("Getting weather...");
         // Add code to limit calls
         Helpers.ajax({
-            url: "https://api.openweathermap.org/data/2.5/weather",
+            url: "http://api.openweathermap.org/data/2.5/weather",
             options: [
             "id"        => "524901",
             "APPID"     => "06d6414fcf6bc783d1f3249c2a44fa81",
