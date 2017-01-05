@@ -6,4 +6,4 @@ standard Library. I *am* using ipinfo.io's and openweathermap's REST APIs to get
 the location and weather info. This site makes use of cookies to minimize the
 number of requests made to the openweathermap API.
 
-You can view this app in action on (codepen.)[http://codepen.io/desttinghim/full/jVGLVM/]
+You can view this app in action on [codepen.](http://codepen.io/desttinghim/full/jVGLVM/) 
