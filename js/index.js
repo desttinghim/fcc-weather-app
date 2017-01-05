@@ -6,6 +6,7 @@ function $extend(from, fields) {
 	return proto;
 }
 var DateTools = function() { };
+DateTools.__name__ = true;
 DateTools.delta = function(d,t) {
 	var t1 = d.getTime() + t;
 	var d1 = new Date();
@@ -13,6 +14,7 @@ DateTools.delta = function(d,t) {
 	return d1;
 };
 var Helpers = function() { };
+Helpers.__name__ = true;
 Helpers.getEl = function(el) {
 	return window.document.getElementById(el);
 };
@@ -31,6 +33,7 @@ Helpers.ajax = function(request) {
 	window.document.head.appendChild(script);
 };
 var HxOverrides = function() { };
+HxOverrides.__name__ = true;
 HxOverrides.dateStr = function(date) {
 	var m = date.getMonth() + 1;
 	var d = date.getDate();
@@ -84,6 +87,7 @@ HxOverrides.iter = function(a) {
 	}};
 };
 var Main = $hx_exports.Main = function() { };
+Main.__name__ = true;
 Main.main = function() {
 	if(js_Cookie.exists("lastRequestTime")) {
 		var s = js_Cookie.get("lastRequestTime");
@@ -98,27 +102,27 @@ Main.main = function() {
 Main.positionCallback = function(pos) {
 	var lat;
 	var $long;
-	lat = pos.coords.latitude;
-	$long = pos.coords.longitude;
+	lat = Math.round(pos.coords.latitude);
+	$long = Math.round(pos.coords.longitude);
+	window.setInterval(Main.requestWeather,600000,lat,$long);
 	Main.requestWeather(lat,$long);
 };
 Main.requestWeather = function(lat,$long) {
 	var currentTime = new Date();
-	var timeSinceLastRequest = currentTime.getMinutes() - Main.lastRequestTime.getMinutes();
-	if(timeSinceLastRequest < 10) {
-		var timeToWait = 10 - timeSinceLastRequest;
-		window.console.log("Please wait " + timeToWait + " minutes for new weather.");
-		window.setTimeout(Main.requestWeather,timeToWait * 60 * 10000 + 1);
+	var timeSinceLastRequest = currentTime.getTime() - Main.lastRequestTime.getTime();
+	if(timeSinceLastRequest < 600000) {
+		window.console.log("" + timeSinceLastRequest + " Cannot request data at this time.");
 		Main.parseWeather(Main.weather);
 		return;
-	} else window.console.log("Getting weather...");
+	}
+	window.console.log("Getting weather...");
 	Helpers.ajax({ url : "http://api.openweathermap.org/data/2.5/weather", options : (function($this) {
 		var $r;
 		var _g = new haxe_ds_StringMap();
 		if(__map_reserved.id != null) _g.setReserved("id","524901"); else _g.h["id"] = "524901";
 		if(__map_reserved.APPID != null) _g.setReserved("APPID","06d6414fcf6bc783d1f3249c2a44fa81"); else _g.h["APPID"] = "06d6414fcf6bc783d1f3249c2a44fa81";
 		_g.set("lat",lat == null?"null":"" + lat);
-		_g.set("long",$long == null?"null":"" + $long);
+		_g.set("lon",$long == null?"null":"" + $long);
 		if(__map_reserved.callback != null) _g.setReserved("callback","Main.weatherCallback"); else _g.h["callback"] = "Main.weatherCallback";
 		$r = _g;
 		return $r;
@@ -137,11 +141,18 @@ Main.parseWeather = function(weather) {
 		return;
 	}
 	Helpers.getEl("location").innerHTML = "" + weather.name + ", " + weather.sys.country;
-	Helpers.getEl("temperature").innerHTML = weather.main.temp;
+	Helpers.getEl("temperature").innerHTML = Std.string(parseFloat(weather.main.temp) - 273.15);
 	Helpers.getEl("description").innerHTML = weather.weather[0].description;
 	Helpers.getEl("icon").setAttribute("src","http://openweathermap.org/img/w/" + weather.weather[0].icon + ".png");
 };
+Math.__name__ = true;
+var Std = function() { };
+Std.__name__ = true;
+Std.string = function(s) {
+	return js_Boot.__string_rec(s,"");
+};
 var StringTools = function() { };
+StringTools.__name__ = true;
 StringTools.isSpace = function(s,pos) {
 	var c = HxOverrides.cca(s,pos);
 	return c > 8 && c < 14 || c == 32;
@@ -153,9 +164,11 @@ StringTools.ltrim = function(s) {
 	if(r > 0) return HxOverrides.substr(s,r,l - r); else return s;
 };
 var haxe_IMap = function() { };
+haxe_IMap.__name__ = true;
 var haxe_ds_StringMap = function() {
 	this.h = { };
 };
+haxe_ds_StringMap.__name__ = true;
 haxe_ds_StringMap.__interfaces__ = [haxe_IMap];
 haxe_ds_StringMap.prototype = {
 	set: function(key,value) {
@@ -203,10 +216,82 @@ var js__$Boot_HaxeError = function(val) {
 	this.message = String(val);
 	if(Error.captureStackTrace) Error.captureStackTrace(this,js__$Boot_HaxeError);
 };
+js__$Boot_HaxeError.__name__ = true;
 js__$Boot_HaxeError.__super__ = Error;
 js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
 });
+var js_Boot = function() { };
+js_Boot.__name__ = true;
+js_Boot.__string_rec = function(o,s) {
+	if(o == null) return "null";
+	if(s.length >= 5) return "<...>";
+	var t = typeof(o);
+	if(t == "function" && (o.__name__ || o.__ename__)) t = "object";
+	switch(t) {
+	case "object":
+		if(o instanceof Array) {
+			if(o.__enum__) {
+				if(o.length == 2) return o[0];
+				var str2 = o[0] + "(";
+				s += "\t";
+				var _g1 = 2;
+				var _g = o.length;
+				while(_g1 < _g) {
+					var i1 = _g1++;
+					if(i1 != 2) str2 += "," + js_Boot.__string_rec(o[i1],s); else str2 += js_Boot.__string_rec(o[i1],s);
+				}
+				return str2 + ")";
+			}
+			var l = o.length;
+			var i;
+			var str1 = "[";
+			s += "\t";
+			var _g2 = 0;
+			while(_g2 < l) {
+				var i2 = _g2++;
+				str1 += (i2 > 0?",":"") + js_Boot.__string_rec(o[i2],s);
+			}
+			str1 += "]";
+			return str1;
+		}
+		var tostr;
+		try {
+			tostr = o.toString;
+		} catch( e ) {
+			if (e instanceof js__$Boot_HaxeError) e = e.val;
+			return "???";
+		}
+		if(tostr != null && tostr != Object.toString && typeof(tostr) == "function") {
+			var s2 = o.toString();
+			if(s2 != "[object Object]") return s2;
+		}
+		var k = null;
+		var str = "{\n";
+		s += "\t";
+		var hasp = o.hasOwnProperty != null;
+		for( var k in o ) {
+		if(hasp && !o.hasOwnProperty(k)) {
+			continue;
+		}
+		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
+			continue;
+		}
+		if(str.length != 2) str += ", \n";
+		str += s + k + " : " + js_Boot.__string_rec(o[k],s);
+		}
+		s = s.substring(1);
+		str += "\n" + s + "}";
+		return str;
+	case "function":
+		return "<function>";
+	case "string":
+		return o;
+	default:
+		return String(o);
+	}
+};
 var js_Cookie = function() { };
+js_Cookie.__name__ = true;
 js_Cookie.set = function(name,value,expireDelay,path,domain) {
 	var s = name + "=" + encodeURIComponent(value);
 	if(expireDelay != null) {
@@ -237,6 +322,9 @@ js_Cookie.get = function(name) {
 js_Cookie.exists = function(name) {
 	return js_Cookie.all().exists(name);
 };
+String.__name__ = true;
+Array.__name__ = true;
+Date.__name__ = ["Date"];
 var __map_reserved = {}
 Main.lastRequestTime = HxOverrides.strDate("00:00:00");
 Main.main();

@@ -20,27 +20,23 @@ class Main {
 
     public static function positionCallback(pos) {
         var lat, long;
-        lat = pos.coords.latitude;
-        long = pos.coords.longitude;
+        lat = Math.round(pos.coords.latitude);
+        long = Math.round(pos.coords.longitude);
 
+        Browser.window.setInterval(requestWeather, 600000, lat, long);
         requestWeather(lat, long);
     }
 
     public static function requestWeather(lat, long) {
         var currentTime = Date.now();
-        var timeSinceLastRequest = currentTime.getMinutes() - lastRequestTime.getMinutes();
-        if (timeSinceLastRequest < 10) {
+        var timeSinceLastRequest = currentTime.getTime() - lastRequestTime.getTime();
+        if (timeSinceLastRequest < 600000) {
             // don't want to make too many requests
-            var timeToWait = 10 - timeSinceLastRequest;
-            Browser.console.log('Please wait $timeToWait minutes for new weather.');
-
-            Browser.window.setTimeout(requestWeather, (timeToWait * 60 * 10000) + 1);
-
+            Browser.console.log('$timeSinceLastRequest Cannot request data at this time.');
             parseWeather(weather);
             return;
-        } else {
-            Browser.console.log("Getting weather...");
         }
+        Browser.console.log("Getting weather...");
         // Add code to limit calls
         Helpers.ajax({
             url: "http://api.openweathermap.org/data/2.5/weather",
@@ -48,7 +44,7 @@ class Main {
             "id"        => "524901",
             "APPID"     => "06d6414fcf6bc783d1f3249c2a44fa81",
             "lat"       => Std.string(lat),
-            "long"      => Std.string(long),
+            "lon"       => Std.string(long),
             "callback"  => "Main.weatherCallback"
             ]
         });
@@ -69,7 +65,7 @@ class Main {
             return;
         }
         Helpers.getEl("location").innerHTML = '${weather.name}, ${weather.sys.country}';
-        Helpers.getEl("temperature").innerHTML = weather.main.temp;
+        Helpers.getEl("temperature").innerHTML = Std.string(Std.parseFloat(weather.main.temp) - 273.15);
         Helpers.getEl("description").innerHTML = weather.weather[0].description;
         Helpers.getEl("icon").setAttribute("src", 'http://openweathermap.org/img/w/${weather.weather[0].icon}.png');
     }

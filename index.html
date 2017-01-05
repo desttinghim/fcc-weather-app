@@ -13,23 +13,24 @@
 </head>
 
 <body>
-  <div id="weather">
+  <div class="container-fluid">
+    <div id="weather" class="col-xs-8">
 
-    <img id="icon">
+      <img id="icon" class="img-responsive">
 
-    <div>
-      <span id="temperature"></span>
-      <span>
-        °<a id="temp-units">C</a>
-      </span>
+      <div>
+        <span id="temperature"></span>
+        <span>
+          °<a id="temp-units">C</a>
+        </span>
+      </div>
+
+      <div id="location"></div>
+
+      <div id="description"></div>
+
     </div>
-    
-    <div id="location"></div>
-
-    <div id="description"></div>
-
   </div>
-
   <script src="js/index.js"></script>
 
 </body>
