@@ -22,7 +22,7 @@ class Main {
         Helpers.ajax({
             url: "http://ipinfo.io",
             options: [
-                "callback" => "positionCallback"
+                "callback" => "Main.positionCallback"
             ]
         });
         Helpers.getEl("temp-units").onclick = function() {

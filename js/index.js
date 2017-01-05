@@ -100,7 +100,7 @@ Main.main = function() {
 	Helpers.ajax({ url : "http://ipinfo.io", options : (function($this) {
 		var $r;
 		var _g = new haxe_ds_StringMap();
-		if(__map_reserved.callback != null) _g.setReserved("callback","positionCallback"); else _g.h["callback"] = "positionCallback";
+		if(__map_reserved.callback != null) _g.setReserved("callback","Main.positionCallback"); else _g.h["callback"] = "Main.positionCallback";
 		$r = _g;
 		return $r;
 	}(this))});
