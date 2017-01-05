@@ -4,7 +4,7 @@ import haxe.Json;
 
 @:expose
 class Main {
-    public static var lastRequestTime = Date.fromString("00:00:00");
+    public static var lastRequestTime = Date.now();
     public static var weather;
     public static var tempUnit = 0;
 
