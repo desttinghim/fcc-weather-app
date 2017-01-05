@@ -34,7 +34,7 @@ class Main {
     public static function requestWeather(lat, long) {
         var currentTime = Date.now();
         var timeSinceLastRequest = currentTime.getTime() - lastRequestTime.getTime();
-        if (timeSinceLastRequest < 600000) {
+        if (timeSinceLastRequest < 600000 && timeSinceLastRequest > 0) {
             // don't want to make too many requests
             Browser.console.log('$timeSinceLastRequest Cannot request data at this time.');
             parseWeather(weather);

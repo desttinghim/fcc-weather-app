@@ -113,13 +113,13 @@ Main.positionCallback = function(pos) {
 Main.requestWeather = function(lat,$long) {
 	var currentTime = new Date();
 	var timeSinceLastRequest = currentTime.getTime() - Main.lastRequestTime.getTime();
-	if(timeSinceLastRequest < 600000) {
+	if(timeSinceLastRequest < 600000 && timeSinceLastRequest > 0) {
 		window.console.log("" + timeSinceLastRequest + " Cannot request data at this time.");
 		Main.parseWeather(Main.weather);
 		return;
 	}
 	window.console.log("Getting weather...");
-	Helpers.ajax({ url : "http://api.openweathermap.org/data/2.5/weather", options : (function($this) {
+	Helpers.ajax({ url : "https://api.openweathermap.org/data/2.5/weather", options : (function($this) {
 		var $r;
 		var _g = new haxe_ds_StringMap();
 		if(__map_reserved.id != null) _g.setReserved("id","524901"); else _g.h["id"] = "524901";
