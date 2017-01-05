@@ -6,3 +6,9 @@
 #weather {
     text-align: center;
 }
+
+#icon {
+  width: 25%;
+  float: none;
+  margin: 0 auto;
+}
